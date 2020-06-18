@@ -1,0 +1,1301 @@
+---
+title: "Blackjack"
+author: "Zachariah Mustafa"
+date: "November 17, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r blackjack, include=TRUE, eval=FALSE, echo=TRUE}
+blackjack <- function(t){
+  df.deck <- data.frame(Hearts = c(2,3,4,5,6,7,8,9,10,10,10,11), Spades = c(2,3,4,5,6,7,8,9,10,10,10,11), Clubs = c(2,3,4,5,6,7,8,9,10,10,10,11), Diamonds = c(2,3,4,5,6,7,8,9,10,10,10,11))
+df.deck2 <- df.deck
+
+#specifying amount of decks
+SetAmountofDecks <- function(deckAmount){
+  if(is.numeric(deckAmount) == FALSE){
+    stop("The deck amount needs to be an numerical entry!")
+  }
+  tDeckAmount <- rep(df.deck, deckAmount)
+  return(tDeckAmount)
+}
+#randomizing which deck is used
+two.decks <<- cbind(df.deck, df.deck2)
+ranchance <- sample(0:1, 1)
+if (ranchance == 1){
+  shuffle <<- two.decks[sample(1:nrow(two.decks)), ]
+}
+#if statement needs optimization, but implementing score.
+playerScore <- 0
+dealerScore <- 0
+getCards <- function(k, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  playerCard1 <- shuffle[[ranrow]][rancol]
+  playerCard2 <- shuffle[[ranrow]][rancol]
+  pscore <- playerCard1 + playerCard2
+  if (pscore > 21){
+    pscore <<- 21
+  }
+  return(pscore)
+}
+#specifying the card when the player hits, accounting for when to make Aces value 1 or 11.
+hitCard <- function(playerScore, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  newCard <- shuffle[[ranrow]][rancol]
+  if (playerScore > 10 & newCard > 10){
+    newCard <- 1
+  }
+  if (newCard < 1){
+    newCard <- 1
+  }
+  playerScoreNew <- newCard + playerScore
+  return(playerScoreNew)
+}
+playerScore <- getCards(1, shuffle)
+dealerScore <- getCards(1, shuffle)
+print(playerScore)
+checkScore <- function(playerScore, dealerScore){
+  if (playerScore == 21){
+    print("The player wins!")
+    playerBlackJack <<- playerBlackJack + 1
+  }else if (dealerScore == 21){
+    print("The Dealer wins!")
+    dealerBlackJack <<- dealerBlackJack + 1
+  }else{
+    if(playerScore < 16){
+      playerScore <<- hitCard(playerScore, shuffle)
+    }
+  }
+}
+#optimizing dealer strategy
+checkScore(playerScore, dealerScore)
+dealerCheck <- function(dealerScore, shuffle){
+  if(dealerScore < 16){
+    dealerScore <<- hitCard(dealerScore, shuffle)
+  }
+}
+dealerCheck(dealerScore, shuffle)
+print(playerScore)
+checkScore(playerScore, dealerScore)
+finalCheck <- function(playerScore, dealerScore){
+  if (playerScore > 21){
+    print("The player busts!")
+  }else if(dealerScore > 21){
+    print("The dealer busts!")
+  }else if(playerScore > dealerScore){
+    print("The player wins!")
+  }else if (playerScore < dealerScore){
+    print("The dealer wins!")
+  }else if(playerScore == dealerScore){
+    print("It is a tie!")
+  }
+}
+#statement of the outcome of the game
+finalCheck(playerScore, dealerScore)
+}
+
+blackjack()
+
+```
+
+```{r blackjack2, include=TRUE, eval=TRUE, echo=FALSE}
+blackjack <- function(t){
+  df.deck <- data.frame(Hearts = c(2,3,4,5,6,7,8,9,10,10,10,11), Spades = c(2,3,4,5,6,7,8,9,10,10,10,11), Clubs = c(2,3,4,5,6,7,8,9,10,10,10,11), Diamonds = c(2,3,4,5,6,7,8,9,10,10,10,11))
+df.deck2 <- df.deck
+SetAmountofDecks <- function(deckAmount){
+  if(is.numeric(deckAmount) == FALSE){
+    stop("The deck amount needs to be an numerical entry!")
+  }
+  tDeckAmount <- rep(df.deck, deckAmount)
+  return(tDeckAmount)
+}
+two.decks <<- cbind(df.deck, df.deck2)
+ranchance <- sample(0:1, 1)
+if (ranchance == 1){
+  shuffle <<- two.decks[sample(1:nrow(two.decks)), ]
+}
+playerScore <- 0
+dealerScore <- 0
+getCards <- function(k, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  playerCard1 <- shuffle[[ranrow]][rancol]
+  playerCard2 <- shuffle[[ranrow]][rancol]
+  pscore <- playerCard1 + playerCard2
+  if (pscore > 21){
+    pscore <<- 21
+  }
+  return(pscore)
+}
+hitCard <- function(playerScore, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  newCard <- shuffle[[ranrow]][rancol]
+  if (playerScore > 10 & newCard > 10){
+    newCard <- 1
+  }
+  if (newCard < 1){
+    newCard <- 1
+  }
+  playerScoreNew <- newCard + playerScore
+  return(playerScoreNew)
+}
+playerScore <- getCards(1, shuffle)
+dealerScore <- getCards(1, shuffle)
+print(playerScore)
+checkScore <- function(playerScore, dealerScore){
+  if (playerScore == 21){
+    print("The player wins!")
+    playerBlackJack <<- playerBlackJack + 1
+  }else if (dealerScore == 21){
+    print("The Dealer wins!")
+    dealerBlackJack <<- dealerBlackJack + 1
+  }else{
+    if(playerScore < 16){
+      playerScore <<- hitCard(playerScore, shuffle)
+    }
+  }
+}
+checkScore(playerScore, dealerScore)
+dealerCheck <- function(dealerScore, shuffle){
+  if(dealerScore < 16){
+    dealerScore <<- hitCard(dealerScore, shuffle)
+  }
+}
+dealerCheck(dealerScore, shuffle)
+print(playerScore)
+checkScore(playerScore, dealerScore)
+finalCheck <- function(playerScore, dealerScore){
+  if (playerScore > 21){
+    print("The player busts!")
+  }else if(dealerScore > 21){
+    print("The dealer busts!")
+  }else if(playerScore > dealerScore){
+    print("The player wins!")
+  }else if (playerScore < dealerScore){
+    print("The dealer wins!")
+  }else if(playerScore == dealerScore){
+    print("It is a tie!")
+  }
+}
+finalCheck(playerScore, dealerScore)
+}
+blackjack()
+```
+
+```{r blackjack3, include=TRUE, eval=TRUE, echo=FALSE}
+blackjack <- function(t){
+  df.deck <- data.frame(Hearts = c(2,3,4,5,6,7,8,9,10,10,10,11), Spades = c(2,3,4,5,6,7,8,9,10,10,10,11), Clubs = c(2,3,4,5,6,7,8,9,10,10,10,11), Diamonds = c(2,3,4,5,6,7,8,9,10,10,10,11))
+df.deck2 <- df.deck
+SetAmountofDecks <- function(deckAmount){
+  if(is.numeric(deckAmount) == FALSE){
+    stop("The deck amount needs to be an numerical entry!")
+  }
+  tDeckAmount <- rep(df.deck, deckAmount)
+  return(tDeckAmount)
+}
+two.decks <<- cbind(df.deck, df.deck2)
+ranchance <- sample(0:1, 1)
+if (ranchance == 1){
+  shuffle <<- two.decks[sample(1:nrow(two.decks)), ]
+}
+playerScore <- 0
+dealerScore <- 0
+getCards <- function(k, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  playerCard1 <- shuffle[[ranrow]][rancol]
+  playerCard2 <- shuffle[[ranrow]][rancol]
+  pscore <- playerCard1 + playerCard2
+  if (pscore > 21){
+    pscore <<- 21
+  }
+  return(pscore)
+}
+hitCard <- function(playerScore, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  newCard <- shuffle[[ranrow]][rancol]
+  if (playerScore > 10 & newCard > 10){
+    newCard <- 1
+  }
+  if (newCard < 1){
+    newCard <- 1
+  }
+  playerScoreNew <- newCard + playerScore
+  return(playerScoreNew)
+}
+playerScore <- getCards(1, shuffle)
+dealerScore <- getCards(1, shuffle)
+print(playerScore)
+checkScore <- function(playerScore, dealerScore){
+  if (playerScore == 21){
+    print("The player wins!")
+    playerBlackJack <<- playerBlackJack + 1
+  }else if (dealerScore == 21){
+    print("The Dealer wins!")
+    dealerBlackJack <<- dealerBlackJack + 1
+  }else{
+    if(playerScore < 16){
+      playerScore <<- hitCard(playerScore, shuffle)
+    }
+  }
+}
+checkScore(playerScore, dealerScore)
+dealerCheck <- function(dealerScore, shuffle){
+  if(dealerScore < 16){
+    dealerScore <<- hitCard(dealerScore, shuffle)
+  }
+}
+dealerCheck(dealerScore, shuffle)
+print(playerScore)
+checkScore(playerScore, dealerScore)
+finalCheck <- function(playerScore, dealerScore){
+  if (playerScore > 21){
+    print("The player busts!")
+  }else if(dealerScore > 21){
+    print("The dealer busts!")
+  }else if(playerScore > dealerScore){
+    print("The player wins!")
+  }else if (playerScore < dealerScore){
+    print("The dealer wins!")
+  }else if(playerScore == dealerScore){
+    print("It is a tie!")
+  }
+}
+finalCheck(playerScore, dealerScore)
+}
+blackjack()
+```
+
+```{r blackjack4, include=TRUE, eval=TRUE, echo=FALSE}
+blackjack <- function(t){
+  df.deck <- data.frame(Hearts = c(2,3,4,5,6,7,8,9,10,10,10,11), Spades = c(2,3,4,5,6,7,8,9,10,10,10,11), Clubs = c(2,3,4,5,6,7,8,9,10,10,10,11), Diamonds = c(2,3,4,5,6,7,8,9,10,10,10,11))
+df.deck2 <- df.deck
+SetAmountofDecks <- function(deckAmount){
+  if(is.numeric(deckAmount) == FALSE){
+    stop("The deck amount needs to be an numerical entry!")
+  }
+  tDeckAmount <- rep(df.deck, deckAmount)
+  return(tDeckAmount)
+}
+two.decks <<- cbind(df.deck, df.deck2)
+ranchance <- sample(0:1, 1)
+if (ranchance == 1){
+  shuffle <<- two.decks[sample(1:nrow(two.decks)), ]
+}
+playerScore <- 0
+dealerScore <- 0
+getCards <- function(k, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  playerCard1 <- shuffle[[ranrow]][rancol]
+  playerCard2 <- shuffle[[ranrow]][rancol]
+  pscore <- playerCard1 + playerCard2
+  if (pscore > 21){
+    pscore <<- 21
+  }
+  return(pscore)
+}
+hitCard <- function(playerScore, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  newCard <- shuffle[[ranrow]][rancol]
+  if (playerScore > 10 & newCard > 10){
+    newCard <- 1
+  }
+  if (newCard < 1){
+    newCard <- 1
+  }
+  playerScoreNew <- newCard + playerScore
+  return(playerScoreNew)
+}
+playerScore <- getCards(1, shuffle)
+dealerScore <- getCards(1, shuffle)
+print(playerScore)
+checkScore <- function(playerScore, dealerScore){
+  if (playerScore == 21){
+    print("The player wins!")
+    playerBlackJack <<- playerBlackJack + 1
+  }else if (dealerScore == 21){
+    print("The Dealer wins!")
+    dealerBlackJack <<- dealerBlackJack + 1
+  }else{
+    if(playerScore < 16){
+      playerScore <<- hitCard(playerScore, shuffle)
+    }
+  }
+}
+checkScore(playerScore, dealerScore)
+dealerCheck <- function(dealerScore, shuffle){
+  if(dealerScore < 16){
+    dealerScore <<- hitCard(dealerScore, shuffle)
+  }
+}
+dealerCheck(dealerScore, shuffle)
+print(playerScore)
+checkScore(playerScore, dealerScore)
+finalCheck <- function(playerScore, dealerScore){
+  if (playerScore > 21){
+    print("The player busts!")
+  }else if(dealerScore > 21){
+    print("The dealer busts!")
+  }else if(playerScore > dealerScore){
+    print("The player wins!")
+  }else if (playerScore < dealerScore){
+    print("The dealer wins!")
+  }else if(playerScore == dealerScore){
+    print("It is a tie!")
+  }
+}
+finalCheck(playerScore, dealerScore)
+}
+blackjack()
+```
+
+```{r blackjack5, include=TRUE, eval=TRUE, echo=FALSE}
+blackjack <- function(t){
+  df.deck <- data.frame(Hearts = c(2,3,4,5,6,7,8,9,10,10,10,11), Spades = c(2,3,4,5,6,7,8,9,10,10,10,11), Clubs = c(2,3,4,5,6,7,8,9,10,10,10,11), Diamonds = c(2,3,4,5,6,7,8,9,10,10,10,11))
+df.deck2 <- df.deck
+SetAmountofDecks <- function(deckAmount){
+  if(is.numeric(deckAmount) == FALSE){
+    stop("The deck amount needs to be an numerical entry!")
+  }
+  tDeckAmount <- rep(df.deck, deckAmount)
+  return(tDeckAmount)
+}
+two.decks <<- cbind(df.deck, df.deck2)
+ranchance <- sample(0:1, 1)
+if (ranchance == 1){
+  shuffle <<- two.decks[sample(1:nrow(two.decks)), ]
+}
+playerScore <- 0
+dealerScore <- 0
+getCards <- function(k, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  playerCard1 <- shuffle[[ranrow]][rancol]
+  playerCard2 <- shuffle[[ranrow]][rancol]
+  pscore <- playerCard1 + playerCard2
+  if (pscore > 21){
+    pscore <<- 21
+  }
+  return(pscore)
+}
+hitCard <- function(playerScore, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  newCard <- shuffle[[ranrow]][rancol]
+  if (playerScore > 10 & newCard > 10){
+    newCard <- 1
+  }
+  if (newCard < 1){
+    newCard <- 1
+  }
+  playerScoreNew <- newCard + playerScore
+  return(playerScoreNew)
+}
+playerScore <- getCards(1, shuffle)
+dealerScore <- getCards(1, shuffle)
+print(playerScore)
+checkScore <- function(playerScore, dealerScore){
+  if (playerScore == 21){
+    print("The player wins!")
+    playerBlackJack <<- playerBlackJack + 1
+  }else if (dealerScore == 21){
+    print("The Dealer wins!")
+    dealerBlackJack <<- dealerBlackJack + 1
+  }else{
+    if(playerScore < 16){
+      playerScore <<- hitCard(playerScore, shuffle)
+    }
+  }
+}
+checkScore(playerScore, dealerScore)
+dealerCheck <- function(dealerScore, shuffle){
+  if(dealerScore < 16){
+    dealerScore <<- hitCard(dealerScore, shuffle)
+  }
+}
+dealerCheck(dealerScore, shuffle)
+print(playerScore)
+checkScore(playerScore, dealerScore)
+finalCheck <- function(playerScore, dealerScore){
+  if (playerScore > 21){
+    print("The player busts!")
+  }else if(dealerScore > 21){
+    print("The dealer busts!")
+  }else if(playerScore > dealerScore){
+    print("The player wins!")
+  }else if (playerScore < dealerScore){
+    print("The dealer wins!")
+  }else if(playerScore == dealerScore){
+    print("It is a tie!")
+  }
+}
+finalCheck(playerScore, dealerScore)
+}
+blackjack()
+```
+
+```{r blackjack6, include=TRUE, eval=TRUE, echo=FALSE}
+blackjack <- function(t){
+  df.deck <- data.frame(Hearts = c(2,3,4,5,6,7,8,9,10,10,10,11), Spades = c(2,3,4,5,6,7,8,9,10,10,10,11), Clubs = c(2,3,4,5,6,7,8,9,10,10,10,11), Diamonds = c(2,3,4,5,6,7,8,9,10,10,10,11))
+df.deck2 <- df.deck
+SetAmountofDecks <- function(deckAmount){
+  if(is.numeric(deckAmount) == FALSE){
+    stop("The deck amount needs to be an numerical entry!")
+  }
+  tDeckAmount <- rep(df.deck, deckAmount)
+  return(tDeckAmount)
+}
+two.decks <<- cbind(df.deck, df.deck2)
+ranchance <- sample(0:1, 1)
+if (ranchance == 1){
+  shuffle <<- two.decks[sample(1:nrow(two.decks)), ]
+}
+playerScore <- 0
+dealerScore <- 0
+getCards <- function(k, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  playerCard1 <- shuffle[[ranrow]][rancol]
+  playerCard2 <- shuffle[[ranrow]][rancol]
+  pscore <- playerCard1 + playerCard2
+  if (pscore > 21){
+    pscore <<- 21
+  }
+  return(pscore)
+}
+hitCard <- function(playerScore, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  newCard <- shuffle[[ranrow]][rancol]
+  if (playerScore > 10 & newCard > 10){
+    newCard <- 1
+  }
+  if (newCard < 1){
+    newCard <- 1
+  }
+  playerScoreNew <- newCard + playerScore
+  return(playerScoreNew)
+}
+playerScore <- getCards(1, shuffle)
+dealerScore <- getCards(1, shuffle)
+print(playerScore)
+checkScore <- function(playerScore, dealerScore){
+  if (playerScore == 21){
+    print("The player wins!")
+    playerBlackJack <<- playerBlackJack + 1
+  }else if (dealerScore == 21){
+    print("The Dealer wins!")
+    dealerBlackJack <<- dealerBlackJack + 1
+  }else{
+    if(playerScore < 16){
+      playerScore <<- hitCard(playerScore, shuffle)
+    }
+  }
+}
+checkScore(playerScore, dealerScore)
+dealerCheck <- function(dealerScore, shuffle){
+  if(dealerScore < 16){
+    dealerScore <<- hitCard(dealerScore, shuffle)
+  }
+}
+dealerCheck(dealerScore, shuffle)
+print(playerScore)
+checkScore(playerScore, dealerScore)
+finalCheck <- function(playerScore, dealerScore){
+  if (playerScore > 21){
+    print("The player busts!")
+  }else if(dealerScore > 21){
+    print("The dealer busts!")
+  }else if(playerScore > dealerScore){
+    print("The player wins!")
+  }else if (playerScore < dealerScore){
+    print("The dealer wins!")
+  }else if(playerScore == dealerScore){
+    print("It is a tie!")
+  }
+}
+finalCheck(playerScore, dealerScore)
+}
+blackjack()
+```
+
+```{r blackjack7, include=TRUE, eval=TRUE, echo=FALSE}
+blackjack <- function(t){
+  df.deck <- data.frame(Hearts = c(2,3,4,5,6,7,8,9,10,10,10,11), Spades = c(2,3,4,5,6,7,8,9,10,10,10,11), Clubs = c(2,3,4,5,6,7,8,9,10,10,10,11), Diamonds = c(2,3,4,5,6,7,8,9,10,10,10,11))
+df.deck2 <- df.deck
+SetAmountofDecks <- function(deckAmount){
+  if(is.numeric(deckAmount) == FALSE){
+    stop("The deck amount needs to be an numerical entry!")
+  }
+  tDeckAmount <- rep(df.deck, deckAmount)
+  return(tDeckAmount)
+}
+two.decks <<- cbind(df.deck, df.deck2)
+ranchance <- sample(0:1, 1)
+if (ranchance == 1){
+  shuffle <<- two.decks[sample(1:nrow(two.decks)), ]
+}
+playerScore <- 0
+dealerScore <- 0
+getCards <- function(k, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  playerCard1 <- shuffle[[ranrow]][rancol]
+  playerCard2 <- shuffle[[ranrow]][rancol]
+  pscore <- playerCard1 + playerCard2
+  if (pscore > 21){
+    pscore <<- 21
+  }
+  return(pscore)
+}
+hitCard <- function(playerScore, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  newCard <- shuffle[[ranrow]][rancol]
+  if (playerScore > 10 & newCard > 10){
+    newCard <- 1
+  }
+  if (newCard < 1){
+    newCard <- 1
+  }
+  playerScoreNew <- newCard + playerScore
+  return(playerScoreNew)
+}
+playerScore <- getCards(1, shuffle)
+dealerScore <- getCards(1, shuffle)
+print(playerScore)
+checkScore <- function(playerScore, dealerScore){
+  if (playerScore == 21){
+    print("The player wins!")
+    playerBlackJack <<- playerBlackJack + 1
+  }else if (dealerScore == 21){
+    print("The Dealer wins!")
+    dealerBlackJack <<- dealerBlackJack + 1
+  }else{
+    if(playerScore < 16){
+      playerScore <<- hitCard(playerScore, shuffle)
+    }
+  }
+}
+checkScore(playerScore, dealerScore)
+dealerCheck <- function(dealerScore, shuffle){
+  if(dealerScore < 16){
+    dealerScore <<- hitCard(dealerScore, shuffle)
+  }
+}
+dealerCheck(dealerScore, shuffle)
+print(playerScore)
+checkScore(playerScore, dealerScore)
+finalCheck <- function(playerScore, dealerScore){
+  if (playerScore > 21){
+    print("The player busts!")
+  }else if(dealerScore > 21){
+    print("The dealer busts!")
+  }else if(playerScore > dealerScore){
+    print("The player wins!")
+  }else if (playerScore < dealerScore){
+    print("The dealer wins!")
+  }else if(playerScore == dealerScore){
+    print("It is a tie!")
+  }
+}
+finalCheck(playerScore, dealerScore)
+}
+blackjack()
+```
+```{r blackjack8, include=TRUE, eval=TRUE, echo=FALSE}
+blackjack <- function(t){
+  df.deck <- data.frame(Hearts = c(2,3,4,5,6,7,8,9,10,10,10,11), Spades = c(2,3,4,5,6,7,8,9,10,10,10,11), Clubs = c(2,3,4,5,6,7,8,9,10,10,10,11), Diamonds = c(2,3,4,5,6,7,8,9,10,10,10,11))
+df.deck2 <- df.deck
+SetAmountofDecks <- function(deckAmount){
+  if(is.numeric(deckAmount) == FALSE){
+    stop("The deck amount needs to be an numerical entry!")
+  }
+  tDeckAmount <- rep(df.deck, deckAmount)
+  return(tDeckAmount)
+}
+two.decks <<- cbind(df.deck, df.deck2)
+ranchance <- sample(0:1, 1)
+if (ranchance == 1){
+  shuffle <<- two.decks[sample(1:nrow(two.decks)), ]
+}
+playerScore <- 0
+dealerScore <- 0
+getCards <- function(k, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  playerCard1 <- shuffle[[ranrow]][rancol]
+  playerCard2 <- shuffle[[ranrow]][rancol]
+  pscore <- playerCard1 + playerCard2
+  if (pscore > 21){
+    pscore <<- 21
+  }
+  return(pscore)
+}
+hitCard <- function(playerScore, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  newCard <- shuffle[[ranrow]][rancol]
+  if (playerScore > 10 & newCard > 10){
+    newCard <- 1
+  }
+  if (newCard < 1){
+    newCard <- 1
+  }
+  playerScoreNew <- newCard + playerScore
+  return(playerScoreNew)
+}
+playerScore <- getCards(1, shuffle)
+dealerScore <- getCards(1, shuffle)
+print(playerScore)
+checkScore <- function(playerScore, dealerScore){
+  if (playerScore == 21){
+    print("The player wins!")
+    playerBlackJack <<- playerBlackJack + 1
+  }else if (dealerScore == 21){
+    print("The Dealer wins!")
+    dealerBlackJack <<- dealerBlackJack + 1
+  }else{
+    if(playerScore < 16){
+      playerScore <<- hitCard(playerScore, shuffle)
+    }
+  }
+}
+checkScore(playerScore, dealerScore)
+dealerCheck <- function(dealerScore, shuffle){
+  if(dealerScore < 16){
+    dealerScore <<- hitCard(dealerScore, shuffle)
+  }
+}
+dealerCheck(dealerScore, shuffle)
+print(playerScore)
+checkScore(playerScore, dealerScore)
+finalCheck <- function(playerScore, dealerScore){
+  if (playerScore > 21){
+    print("The player busts!")
+  }else if(dealerScore > 21){
+    print("The dealer busts!")
+  }else if(playerScore > dealerScore){
+    print("The player wins!")
+  }else if (playerScore < dealerScore){
+    print("The dealer wins!")
+  }else if(playerScore == dealerScore){
+    print("It is a tie!")
+  }
+}
+finalCheck(playerScore, dealerScore)
+}
+blackjack()
+```
+```{r blackjack9, include=TRUE, eval=TRUE, echo=FALSE}
+blackjack <- function(t){
+  df.deck <- data.frame(Hearts = c(2,3,4,5,6,7,8,9,10,10,10,11), Spades = c(2,3,4,5,6,7,8,9,10,10,10,11), Clubs = c(2,3,4,5,6,7,8,9,10,10,10,11), Diamonds = c(2,3,4,5,6,7,8,9,10,10,10,11))
+df.deck2 <- df.deck
+SetAmountofDecks <- function(deckAmount){
+  if(is.numeric(deckAmount) == FALSE){
+    stop("The deck amount needs to be an numerical entry!")
+  }
+  tDeckAmount <- rep(df.deck, deckAmount)
+  return(tDeckAmount)
+}
+two.decks <<- cbind(df.deck, df.deck2)
+ranchance <- sample(0:1, 1)
+if (ranchance == 1){
+  shuffle <<- two.decks[sample(1:nrow(two.decks)), ]
+}
+playerScore <- 0
+dealerScore <- 0
+getCards <- function(k, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  playerCard1 <- shuffle[[ranrow]][rancol]
+  playerCard2 <- shuffle[[ranrow]][rancol]
+  pscore <- playerCard1 + playerCard2
+  if (pscore > 21){
+    pscore <<- 21
+  }
+  return(pscore)
+}
+hitCard <- function(playerScore, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  newCard <- shuffle[[ranrow]][rancol]
+  if (playerScore > 10 & newCard > 10){
+    newCard <- 1
+  }
+  if (newCard < 1){
+    newCard <- 1
+  }
+  playerScoreNew <- newCard + playerScore
+  return(playerScoreNew)
+}
+playerScore <- getCards(1, shuffle)
+dealerScore <- getCards(1, shuffle)
+print(playerScore)
+checkScore <- function(playerScore, dealerScore){
+  if (playerScore == 21){
+    print("The player wins!")
+    playerBlackJack <<- playerBlackJack + 1
+  }else if (dealerScore == 21){
+    print("The Dealer wins!")
+    dealerBlackJack <<- dealerBlackJack + 1
+  }else{
+    if(playerScore < 16){
+      playerScore <<- hitCard(playerScore, shuffle)
+    }
+  }
+}
+checkScore(playerScore, dealerScore)
+dealerCheck <- function(dealerScore, shuffle){
+  if(dealerScore < 16){
+    dealerScore <<- hitCard(dealerScore, shuffle)
+  }
+}
+dealerCheck(dealerScore, shuffle)
+print(playerScore)
+checkScore(playerScore, dealerScore)
+finalCheck <- function(playerScore, dealerScore){
+  if (playerScore > 21){
+    print("The player busts!")
+  }else if(dealerScore > 21){
+    print("The dealer busts!")
+  }else if(playerScore > dealerScore){
+    print("The player wins!")
+  }else if (playerScore < dealerScore){
+    print("The dealer wins!")
+  }else if(playerScore == dealerScore){
+    print("It is a tie!")
+  }
+}
+finalCheck(playerScore, dealerScore)
+}
+blackjack()
+```
+```{r blackjack10, include=TRUE, eval=TRUE, echo=FALSE}
+blackjack <- function(t){
+  df.deck <- data.frame(Hearts = c(2,3,4,5,6,7,8,9,10,10,10,11), Spades = c(2,3,4,5,6,7,8,9,10,10,10,11), Clubs = c(2,3,4,5,6,7,8,9,10,10,10,11), Diamonds = c(2,3,4,5,6,7,8,9,10,10,10,11))
+df.deck2 <- df.deck
+SetAmountofDecks <- function(deckAmount){
+  if(is.numeric(deckAmount) == FALSE){
+    stop("The deck amount needs to be an numerical entry!")
+  }
+  tDeckAmount <- rep(df.deck, deckAmount)
+  return(tDeckAmount)
+}
+two.decks <<- cbind(df.deck, df.deck2)
+ranchance <- sample(0:1, 1)
+if (ranchance == 1){
+  shuffle <<- two.decks[sample(1:nrow(two.decks)), ]
+}
+playerScore <- 0
+dealerScore <- 0
+getCards <- function(k, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  playerCard1 <- shuffle[[ranrow]][rancol]
+  playerCard2 <- shuffle[[ranrow]][rancol]
+  pscore <- playerCard1 + playerCard2
+  if (pscore > 21){
+    pscore <<- 21
+  }
+  return(pscore)
+}
+hitCard <- function(playerScore, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  newCard <- shuffle[[ranrow]][rancol]
+  if (playerScore > 10 & newCard > 10){
+    newCard <- 1
+  }
+  if (newCard < 1){
+    newCard <- 1
+  }
+  playerScoreNew <- newCard + playerScore
+  return(playerScoreNew)
+}
+playerScore <- getCards(1, shuffle)
+dealerScore <- getCards(1, shuffle)
+print(playerScore)
+checkScore <- function(playerScore, dealerScore){
+  if (playerScore == 21){
+    print("The player wins!")
+    playerBlackJack <<- playerBlackJack + 1
+  }else if (dealerScore == 21){
+    print("The Dealer wins!")
+    dealerBlackJack <<- dealerBlackJack + 1
+  }else{
+    if(playerScore < 16){
+      playerScore <<- hitCard(playerScore, shuffle)
+    }
+  }
+}
+checkScore(playerScore, dealerScore)
+dealerCheck <- function(dealerScore, shuffle){
+  if(dealerScore < 16){
+    dealerScore <<- hitCard(dealerScore, shuffle)
+  }
+}
+dealerCheck(dealerScore, shuffle)
+print(playerScore)
+checkScore(playerScore, dealerScore)
+finalCheck <- function(playerScore, dealerScore){
+  if (playerScore > 21){
+    print("The player busts!")
+  }else if(dealerScore > 21){
+    print("The dealer busts!")
+  }else if(playerScore > dealerScore){
+    print("The player wins!")
+  }else if (playerScore < dealerScore){
+    print("The dealer wins!")
+  }else if(playerScore == dealerScore){
+    print("It is a tie!")
+  }
+}
+finalCheck(playerScore, dealerScore)
+}
+blackjack()
+```
+```{r blackjack11, include=TRUE, eval=TRUE, echo=FALSE}
+blackjack <- function(t){
+  df.deck <- data.frame(Hearts = c(2,3,4,5,6,7,8,9,10,10,10,11), Spades = c(2,3,4,5,6,7,8,9,10,10,10,11), Clubs = c(2,3,4,5,6,7,8,9,10,10,10,11), Diamonds = c(2,3,4,5,6,7,8,9,10,10,10,11))
+df.deck2 <- df.deck
+SetAmountofDecks <- function(deckAmount){
+  if(is.numeric(deckAmount) == FALSE){
+    stop("The deck amount needs to be an numerical entry!")
+  }
+  tDeckAmount <- rep(df.deck, deckAmount)
+  return(tDeckAmount)
+}
+two.decks <<- cbind(df.deck, df.deck2)
+ranchance <- sample(0:1, 1)
+if (ranchance == 1){
+  shuffle <<- two.decks[sample(1:nrow(two.decks)), ]
+}
+playerScore <- 0
+dealerScore <- 0
+getCards <- function(k, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  playerCard1 <- shuffle[[ranrow]][rancol]
+  playerCard2 <- shuffle[[ranrow]][rancol]
+  pscore <- playerCard1 + playerCard2
+  if (pscore > 21){
+    pscore <<- 21
+  }
+  return(pscore)
+}
+hitCard <- function(playerScore, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  newCard <- shuffle[[ranrow]][rancol]
+  if (playerScore > 10 & newCard > 10){
+    newCard <- 1
+  }
+  if (newCard < 1){
+    newCard <- 1
+  }
+  playerScoreNew <- newCard + playerScore
+  return(playerScoreNew)
+}
+playerScore <- getCards(1, shuffle)
+dealerScore <- getCards(1, shuffle)
+print(playerScore)
+checkScore <- function(playerScore, dealerScore){
+  if (playerScore == 21){
+    print("The player wins!")
+    playerBlackJack <<- playerBlackJack + 1
+  }else if (dealerScore == 21){
+    print("The Dealer wins!")
+    dealerBlackJack <<- dealerBlackJack + 1
+  }else{
+    if(playerScore < 16){
+      playerScore <<- hitCard(playerScore, shuffle)
+    }
+  }
+}
+checkScore(playerScore, dealerScore)
+dealerCheck <- function(dealerScore, shuffle){
+  if(dealerScore < 16){
+    dealerScore <<- hitCard(dealerScore, shuffle)
+  }
+}
+dealerCheck(dealerScore, shuffle)
+print(playerScore)
+checkScore(playerScore, dealerScore)
+finalCheck <- function(playerScore, dealerScore){
+  if (playerScore > 21){
+    print("The player busts!")
+  }else if(dealerScore > 21){
+    print("The dealer busts!")
+  }else if(playerScore > dealerScore){
+    print("The player wins!")
+  }else if (playerScore < dealerScore){
+    print("The dealer wins!")
+  }else if(playerScore == dealerScore){
+    print("It is a tie!")
+  }
+}
+finalCheck(playerScore, dealerScore)
+}
+blackjack()
+```
+```{r blackjack12, include=TRUE, eval=TRUE, echo=FALSE}
+blackjack <- function(t){
+  df.deck <- data.frame(Hearts = c(2,3,4,5,6,7,8,9,10,10,10,11), Spades = c(2,3,4,5,6,7,8,9,10,10,10,11), Clubs = c(2,3,4,5,6,7,8,9,10,10,10,11), Diamonds = c(2,3,4,5,6,7,8,9,10,10,10,11))
+df.deck2 <- df.deck
+SetAmountofDecks <- function(deckAmount){
+  if(is.numeric(deckAmount) == FALSE){
+    stop("The deck amount needs to be an numerical entry!")
+  }
+  tDeckAmount <- rep(df.deck, deckAmount)
+  return(tDeckAmount)
+}
+two.decks <<- cbind(df.deck, df.deck2)
+ranchance <- sample(0:1, 1)
+if (ranchance == 1){
+  shuffle <<- two.decks[sample(1:nrow(two.decks)), ]
+}
+playerScore <- 0
+dealerScore <- 0
+getCards <- function(k, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  playerCard1 <- shuffle[[ranrow]][rancol]
+  playerCard2 <- shuffle[[ranrow]][rancol]
+  pscore <- playerCard1 + playerCard2
+  if (pscore > 21){
+    pscore <<- 21
+  }
+  return(pscore)
+}
+hitCard <- function(playerScore, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  newCard <- shuffle[[ranrow]][rancol]
+  if (playerScore > 10 & newCard > 10){
+    newCard <- 1
+  }
+  if (newCard < 1){
+    newCard <- 1
+  }
+  playerScoreNew <- newCard + playerScore
+  return(playerScoreNew)
+}
+playerScore <- getCards(1, shuffle)
+dealerScore <- getCards(1, shuffle)
+print(playerScore)
+checkScore <- function(playerScore, dealerScore){
+  if (playerScore == 21){
+    print("The player wins!")
+    playerBlackJack <<- playerBlackJack + 1
+  }else if (dealerScore == 21){
+    print("The Dealer wins!")
+    dealerBlackJack <<- dealerBlackJack + 1
+  }else{
+    if(playerScore < 16){
+      playerScore <<- hitCard(playerScore, shuffle)
+    }
+  }
+}
+checkScore(playerScore, dealerScore)
+dealerCheck <- function(dealerScore, shuffle){
+  if(dealerScore < 16){
+    dealerScore <<- hitCard(dealerScore, shuffle)
+  }
+}
+dealerCheck(dealerScore, shuffle)
+print(playerScore)
+checkScore(playerScore, dealerScore)
+finalCheck <- function(playerScore, dealerScore){
+  if (playerScore > 21){
+    print("The player busts!")
+  }else if(dealerScore > 21){
+    print("The dealer busts!")
+  }else if(playerScore > dealerScore){
+    print("The player wins!")
+  }else if (playerScore < dealerScore){
+    print("The dealer wins!")
+  }else if(playerScore == dealerScore){
+    print("It is a tie!")
+  }
+}
+finalCheck(playerScore, dealerScore)
+}
+blackjack()
+```
+```{r blackjack13, include=TRUE, eval=TRUE, echo=FALSE}
+blackjack <- function(t){
+  df.deck <- data.frame(Hearts = c(2,3,4,5,6,7,8,9,10,10,10,11), Spades = c(2,3,4,5,6,7,8,9,10,10,10,11), Clubs = c(2,3,4,5,6,7,8,9,10,10,10,11), Diamonds = c(2,3,4,5,6,7,8,9,10,10,10,11))
+df.deck2 <- df.deck
+SetAmountofDecks <- function(deckAmount){
+  if(is.numeric(deckAmount) == FALSE){
+    stop("The deck amount needs to be an numerical entry!")
+  }
+  tDeckAmount <- rep(df.deck, deckAmount)
+  return(tDeckAmount)
+}
+two.decks <<- cbind(df.deck, df.deck2)
+ranchance <- sample(0:1, 1)
+if (ranchance == 1){
+  shuffle <<- two.decks[sample(1:nrow(two.decks)), ]
+}
+playerScore <- 0
+dealerScore <- 0
+getCards <- function(k, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  playerCard1 <- shuffle[[ranrow]][rancol]
+  playerCard2 <- shuffle[[ranrow]][rancol]
+  pscore <- playerCard1 + playerCard2
+  if (pscore > 21){
+    pscore <<- 21
+  }
+  return(pscore)
+}
+hitCard <- function(playerScore, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  newCard <- shuffle[[ranrow]][rancol]
+  if (playerScore > 10 & newCard > 10){
+    newCard <- 1
+  }
+  if (newCard < 1){
+    newCard <- 1
+  }
+  playerScoreNew <- newCard + playerScore
+  return(playerScoreNew)
+}
+playerScore <- getCards(1, shuffle)
+dealerScore <- getCards(1, shuffle)
+print(playerScore)
+checkScore <- function(playerScore, dealerScore){
+  if (playerScore == 21){
+    print("The player wins!")
+    playerBlackJack <<- playerBlackJack + 1
+  }else if (dealerScore == 21){
+    print("The Dealer wins!")
+    dealerBlackJack <<- dealerBlackJack + 1
+  }else{
+    if(playerScore < 16){
+      playerScore <<- hitCard(playerScore, shuffle)
+    }
+  }
+}
+checkScore(playerScore, dealerScore)
+dealerCheck <- function(dealerScore, shuffle){
+  if(dealerScore < 16){
+    dealerScore <<- hitCard(dealerScore, shuffle)
+  }
+}
+dealerCheck(dealerScore, shuffle)
+print(playerScore)
+checkScore(playerScore, dealerScore)
+finalCheck <- function(playerScore, dealerScore){
+  if (playerScore > 21){
+    print("The player busts!")
+  }else if(dealerScore > 21){
+    print("The dealer busts!")
+  }else if(playerScore > dealerScore){
+    print("The player wins!")
+  }else if (playerScore < dealerScore){
+    print("The dealer wins!")
+  }else if(playerScore == dealerScore){
+    print("It is a tie!")
+  }
+}
+finalCheck(playerScore, dealerScore)
+}
+blackjack()
+```
+```{r blackjack14, include=TRUE, eval=TRUE, echo=FALSE}
+blackjack <- function(t){
+  df.deck <- data.frame(Hearts = c(2,3,4,5,6,7,8,9,10,10,10,11), Spades = c(2,3,4,5,6,7,8,9,10,10,10,11), Clubs = c(2,3,4,5,6,7,8,9,10,10,10,11), Diamonds = c(2,3,4,5,6,7,8,9,10,10,10,11))
+df.deck2 <- df.deck
+SetAmountofDecks <- function(deckAmount){
+  if(is.numeric(deckAmount) == FALSE){
+    stop("The deck amount needs to be an numerical entry!")
+  }
+  tDeckAmount <- rep(df.deck, deckAmount)
+  return(tDeckAmount)
+}
+two.decks <<- cbind(df.deck, df.deck2)
+ranchance <- sample(0:1, 1)
+if (ranchance == 1){
+  shuffle <<- two.decks[sample(1:nrow(two.decks)), ]
+}
+playerScore <- 0
+dealerScore <- 0
+getCards <- function(k, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  playerCard1 <- shuffle[[ranrow]][rancol]
+  playerCard2 <- shuffle[[ranrow]][rancol]
+  pscore <- playerCard1 + playerCard2
+  if (pscore > 21){
+    pscore <<- 21
+  }
+  return(pscore)
+}
+hitCard <- function(playerScore, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  newCard <- shuffle[[ranrow]][rancol]
+  if (playerScore > 10 & newCard > 10){
+    newCard <- 1
+  }
+  if (newCard < 1){
+    newCard <- 1
+  }
+  playerScoreNew <- newCard + playerScore
+  return(playerScoreNew)
+}
+playerScore <- getCards(1, shuffle)
+dealerScore <- getCards(1, shuffle)
+print(playerScore)
+checkScore <- function(playerScore, dealerScore){
+  if (playerScore == 21){
+    print("The player wins!")
+    playerBlackJack <<- playerBlackJack + 1
+  }else if (dealerScore == 21){
+    print("The Dealer wins!")
+    dealerBlackJack <<- dealerBlackJack + 1
+  }else{
+    if(playerScore < 16){
+      playerScore <<- hitCard(playerScore, shuffle)
+    }
+  }
+}
+checkScore(playerScore, dealerScore)
+dealerCheck <- function(dealerScore, shuffle){
+  if(dealerScore < 16){
+    dealerScore <<- hitCard(dealerScore, shuffle)
+  }
+}
+dealerCheck(dealerScore, shuffle)
+print(playerScore)
+checkScore(playerScore, dealerScore)
+finalCheck <- function(playerScore, dealerScore){
+  if (playerScore > 21){
+    print("The player busts!")
+  }else if(dealerScore > 21){
+    print("The dealer busts!")
+  }else if(playerScore > dealerScore){
+    print("The player wins!")
+  }else if (playerScore < dealerScore){
+    print("The dealer wins!")
+  }else if(playerScore == dealerScore){
+    print("It is a tie!")
+  }
+}
+finalCheck(playerScore, dealerScore)
+}
+blackjack()
+```
+
+```{r blackjack15, include=TRUE, eval=FALSE, echo=FALSE}
+blackjack <- function(t){
+  df.deck <<- data.frame(Hearts = c(2,3,4,5,6,7,8,9,10,10,10,11), Spades = c(2,3,4,5,6,7,8,9,10,10,10,11), Clubs = c(2,3,4,5,6,7,8,9,10,10,10,11), Diamonds = c(2,3,4,5,6,7,8,9,10,10,10,11))
+df.deck2 <<- df.deck
+SetAmountofDecks <- function(deckAmount){
+  if(is.numeric(deckAmount) == FALSE){
+    stop("The deck amount needs to be an numerical entry!")
+  }
+  tDeckAmount <<- rep(df.deck, deckAmount)
+  return(tDeckAmount)
+}
+two.decks <<- cbind(df.deck, df.deck2)
+ranchance <- sample(0:1, 1)
+if (ranchance == 1){
+  shuffle <<- two.decks[sample(1:nrow(two.decks)), ]
+}
+playerScore <- 0
+dealerScore <- 0
+getCards <- function(k, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  playerCard1 <- shuffle[[ranrow]][rancol]
+  playerCard2 <- shuffle[[ranrow]][rancol]
+  pscore <- playerCard1 + playerCard2
+  if (pscore > 21){
+    pscore <<- 21
+  }
+  return(pscore)
+}
+hitCard <- function(playerScore, df){
+  ranrow <- sample(1:ncol(two.decks), 1)
+  rancol <- sample(1:12, 1)
+  newCard <- shuffle[[ranrow]][rancol]
+  if (playerScore > 10 & newCard > 10){
+    newCard <- 1
+  }
+  if (newCard < 1){
+    newCard <- 1
+  }
+  playerScoreNew <- newCard + playerScore
+  return(playerScoreNew)
+}
+playerScore <- getCards(1, shuffle)
+dealerScore <- getCards(1, shuffle)
+print(playerScore)
+checkScore <- function(playerScore, dealerScore){
+  if (playerScore == 21){
+    print("The player wins!")
+    playerBlackJack <<- playerBlackJack + 1
+  }else if (dealerScore == 21){
+    print("The Dealer wins!")
+    dealerBlackJack <<- dealerBlackJack + 1
+  }else{
+    if(playerScore < 16){
+      playerScore <<- hitCard(playerScore, shuffle)
+    }
+  }
+}
+checkScore(playerScore, dealerScore)
+dealerCheck <- function(dealerScore, shuffle){
+  if(dealerScore < 16){
+    dealerScore <<- hitCard(dealerScore, shuffle)
+  }
+}
+dealerCheck(dealerScore, shuffle)
+print(playerScore)
+checkScore(playerScore, dealerScore)
+finalCheck <- function(playerScore, dealerScore){
+  if (playerScore > 21){
+    print("The player busts!")
+  }else if(dealerScore > 21){
+    print("The dealer busts!")
+  }else if(playerScore > dealerScore){
+    print("The player wins!")
+  }else if (playerScore < dealerScore){
+    print("The dealer wins!")
+  }else if(playerScore == dealerScore){
+    print("It is a tie!")
+  }
+}
+finalCheck(playerScore, dealerScore)
+}
+blackjack()
+return(tDeckAmount)
+```
+
+a) The number of decks played does matter - logically, a card being removed does have more of an impact if the deck count is smaller, and gives an edge to the player, especially if he or she is skilled in calculating which cards are not in the deck. This is a systematic advantage given to the player and remains fairly consistent.
+
+b) The more players at the table, the less hands that are dealt, which gives an advantage if a player is card-counting. If the player is not, it should not have any real influence on the outcome and the probability of winning.
+
+c) If the level of shuffling is truly random, it should not have an impact, unless, once again, you are card-counting.
+
+I could not perfect the implementation of multiple players or decks. I think I had too many variables in the function to where I can't track which number pertains to what.
+
+With a refresh in statistics, I would run a confidence interval to give an accurate estimate of the true proportion of player wins to total games. I had trouble finding the z-score in this context, however.
+
+*Note: I think I have the deck amount misplaced in the function, and am unsure how I would able to have that outside of the function so that you can select it by putting in a numeric entry.
